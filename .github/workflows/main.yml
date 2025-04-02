@@ -20,13 +20,17 @@ jobs:
       run: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 
     - name: Pull Docker image
-      run: docker pull tooljet/try:ee-lts-lates
+      run: docker pull tooljet/try:ee-lts-latest
 
     - name: Save Docker image to file
-      run: docker save tooljet/try:ee-lts-lates -o ./docker-image.tar
+      run: docker save tooljet/try:ee-lts-latest -o ./docker-image.tar
+
+    - name: Compress Docker image
+      run: gzip -9 ./docker-image.tar
 
     - name: Upload Docker image artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.2
       with:
         name: docker-image
-        path: ./docker-image.tar
+        path: ./docker-image.tar.gz
+        retention-days: 5
