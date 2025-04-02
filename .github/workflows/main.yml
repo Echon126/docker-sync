@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
-
+# Add this permissions block
+permissions:
+  contents: write
+  packages: write
+  
 jobs:
   export-docker-image:
     runs-on: ubuntu-latest
