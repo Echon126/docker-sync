@@ -1,0 +1,32 @@
+name: Export Docker Image from Docker Hub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  export-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+
+    - name: Pull Docker image
+      run: docker pull <your-dockerhub-username>/<your-image-name>:<tag>
+
+    - name: Save Docker image to file
+      run: docker save <your-dockerhub-username>/<your-image-name>:<tag> -o ./docker-image.tar
+
+    - name: Upload Docker image artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: docker-image
+        path: ./docker-image.tar
