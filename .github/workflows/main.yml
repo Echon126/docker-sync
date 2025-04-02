@@ -28,9 +28,18 @@ jobs:
     - name: Compress Docker image
       run: gzip -9 ./docker-image.tar
 
-    - name: Upload Docker image artifact
-      uses: actions/upload-artifact@cc9f3e25b927df46c3b95982ca25dd8d30184d9b
-      with:
-        name: docker-image
-        path: ./docker-image.tar.gz
-        retention-days: 5
+    - name: Create release
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        release_name="docker-image-$(date +'%Y%m%d%H%M%S')"
+        echo "Creating release: $release_name"
+        gh release create $release_name --title "Docker Image Release" --notes "Automated Docker image export"
+        echo "release_name=$release_name" >> $GITHUB_ENV
+
+    - name: Upload Docker image to release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload ${{ env.release_name }} ./docker-image.tar.gz
