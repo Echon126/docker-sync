@@ -17,7 +17,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+      run: echo "www.cn1992091314" | docker login --username "echon126" --password-stdin
 
     - name: Pull Docker image
       run: docker pull tooljet/try:ee-lts-latest
